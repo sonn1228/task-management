@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const Task = require('../../../models/task.model');
-
+const objPaginationHelper = require('../../../helpers/pagination');
 
 // [GET] /api/v1/tasks
 router.get('/', async (req, res) => {
@@ -12,14 +12,16 @@ router.get('/', async (req, res) => {
         if (req.query.status) {
             find.status = req.query.status;
         }
-        console.log(req.query);
         // sort
         const objSort = {}
         if(req.query.sortKey && req.query.sortValue){
             objSort[req.query.sortKey] = req.query.sortValue;
         }
         // obj sort
-        const tasks = await Task.find(find).sort(objSort);
+        // pagination
+        const objPagination = objPaginationHelper(req);
+        // end pagination
+        const tasks = await Task.find(find).sort(objSort).skip(objPagination.skipItem).limit(objPagination.limitTask);
         res.json(tasks);
     } catch (error) {
         res.send(error);
