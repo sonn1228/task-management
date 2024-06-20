@@ -14,13 +14,22 @@ router.get('/', async (req, res) => {
         }
         // sort
         const objSort = {}
-        if(req.query.sortKey && req.query.sortValue){
+        if (req.query.sortKey && req.query.sortValue) {
             objSort[req.query.sortKey] = req.query.sortValue;
         }
         // obj sort
         // pagination
         const objPagination = objPaginationHelper(req);
+
+
         // end pagination
+        // search
+        if (req.query.keyword) {
+            const regex = new RegExp(req.query.keyword, "i");
+            find.title = regex;
+        }
+        //end search
+
         const tasks = await Task.find(find).sort(objSort).skip(objPagination.skipItem).limit(objPagination.limitTask);
         res.json(tasks);
     } catch (error) {
