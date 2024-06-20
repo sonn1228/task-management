@@ -1,33 +1,17 @@
-const express = require('express')
-const app = express()
-const port = 3000
+  const express = require('express')
+  const app = express()
+  const port = 3000
 
-const Task = require('./models/task.model');
+  require('dotenv').config();
 
-const database = require('./config/database');
-database.connect();
+  const database = require('./config/database');
+  database.connect();
 
-require('dotenv').config()
-app.get('/tasks', async (req, res) => {
-  const tasks = await Task.find({
-    deleted: false
-  });
-  res.json(tasks);
-})
+  const routes = require('./api/v1/routes/index.route');
+  routes(app);
 
 
-app.get('/tasks/detail/:id', async (req, res) => {
-  try {
-    const tasks = await Task.findOne({
-      deleted: false,
-      _id: req.params.id
-    });
-    res.json(tasks);
-  } catch (error) {
-    res.json(error);
-  }
-});
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+  app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
+  })
