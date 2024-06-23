@@ -90,7 +90,8 @@ module.exports.changeMulti = async (req, res) => {
                 await Task.updateMany({
                     _id: { $in: ids }
                 }, {
-                    deleted: true
+                    deleted: true,
+                    deletedAt: new Date()
                 })
                 break;
             default:
