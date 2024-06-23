@@ -1,3 +1,0 @@
-{ timestamps: true }: createAt, updateAt
-
- 

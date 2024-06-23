@@ -1,14 +1,15 @@
 module.exports = (req) => {
     const objPagination = {
-        limitTask: 2,
         currentPage: 1,
-        skipItem: 0,
+        limitItem: 2,
+        skipItem: 0
+    }
+    if (req.query.page) {
+        objPagination.currentPage = req.query.page;
+        objPagination.skipItem = (req.query.page - 1) * objPagination.limitItem;
     }
     if(req.query.limit){
-        objPagination.limitTask = req.query.limit;
-    }
-    if(req.query.page){
-        objPagination.skipItem = (req.query.page - 1) * objPagination.limitTask;
+        objPagination.limitItem = req.query.limit;    
     }
     return objPagination;
 }

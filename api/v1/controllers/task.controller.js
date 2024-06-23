@@ -1,69 +1,117 @@
 const Task = require('../../../models/task.model');
-const objPaginationHelper = require('../../../helpers/pagination');
+const paginationHelper = require('../../../helpers/pagination');
 
+// [GET] /api/v1/tasks
 module.exports.index = async (req, res) => {
     try {
-        const find = {
-            deleted: false,
-        }
+        const find = {};
+
+        // status
         if (req.query.status) {
             find.status = req.query.status;
         }
+
         // sort
-        const objSort = {}
+        const sort = {};
         if (req.query.sortKey && req.query.sortValue) {
-            objSort[req.query.sortKey] = req.query.sortValue;
+            sort[req.query.sortKey] = req.query.sortValue === 'asc' ? 1 : -1;
         }
-        // obj sort
+
         // pagination
-        const objPagination = objPaginationHelper(req);
+        const objPagination = paginationHelper(req);
 
-
-        // end pagination
-        // search
+        // keyword
         if (req.query.keyword) {
-            const regex = new RegExp(req.query.keyword, "i");
+            const regex = new RegExp(req.query.keyword, 'i');
             find.title = regex;
         }
-        //end search
 
-        const tasks = await Task.find(find).sort(objSort).skip(objPagination.skipItem).limit(objPagination.limitTask);
+        const tasks = await Task.find(find).sort(sort).skip(objPagination.skipItem).limit(objPagination.limitItem);
         res.json(tasks);
     } catch (error) {
-        res.send(error);
+        res.status(500).json({ error: error.message });
     }
 }
 
 module.exports.detail = async (req, res) => {
     try {
-        const tasks = await Task.findOne({
-            deleted: false,
-            _id: req.params.id
-        });
-        res.json(tasks);
+        const taskId = req.params.id;
+        if (!taskId) {
+            return res.status(400).json({ error: 'Task ID is required' });
+        }
+        const task = await Task.findById(taskId);
+        if (!task) {
+            return res.status(404).json({ error: 'Task not found' });
+        }
+        res.json(task);
     } catch (error) {
-        res.json(error);
+        res.status(500).json({ error: error.message });
     }
 }
-
+// [GET] /api/v1/tasks/change-status/:id
 module.exports.changeStatus = async (req, res) => {
     try {
-        const id = req.params.id;
-        const status = req.body.status;
+        const taskId = req.params.id;
+        const { status } = req.body;
         await Task.updateOne({
-            _id: id
+            _id: taskId
         }, {
             status: status
         });
         res.json({
             code: 200,
-            message: "Update Successfully"
+            message: 'Update successfully',
+        })
+
+    } catch (error) {
+        res.json({
+            code: 400,
+            message: 'Not Found',
+
+        })
+    }
+}
+
+
+module.exports.changeMulti = async (req, res) => {
+    try {
+        const key = req.body.key;
+        const value = req.body.value;
+        const ids = req.body.ids;
+        await Task.updateMany({
+            _id: { $in: ids }
+        }, {
+            [key]: value
+        })
+        res.json({
+            code: 200,
+            message: 'Update Successfully'
+        })
+    }
+    catch (error) {
+        res.json({
+            code: 400,
+            message: 'Not Found',
+
+        })
+    }
+}
+
+// [POST] /api/v1/create
+module.exports.create = async (req, res) => {
+    try {
+        const newTask = new Task(req.body);
+        const data = await newTask.save();
+
+        res.json({
+            code: 200,
+            message: 'Create successfully',
+            data: data
         })
     } catch (error) {
         res.json({
             code: 400,
-            message: "NOT FOUND",
-            
+            message: 'Create Failed'
         })
     }
 }
