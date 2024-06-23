@@ -76,13 +76,26 @@ module.exports.changeStatus = async (req, res) => {
 module.exports.changeMulti = async (req, res) => {
     try {
         const key = req.body.key;
-        const value = req.body.value;
         const ids = req.body.ids;
-        await Task.updateMany({
-            _id: { $in: ids }
-        }, {
-            [key]: value
-        })
+        switch (key) {
+            case 'status':
+                const value = req.body.value;
+                await Task.updateMany({
+                    _id: { $in: ids }
+                }, {
+                    [key]: value
+                })
+                break;
+            case 'delete':
+                await Task.updateMany({
+                    _id: { $in: ids }
+                }, {
+                    deleted: true
+                })
+                break;
+            default:
+                break;
+        }
         res.json({
             code: 200,
             message: 'Update Successfully'
@@ -134,5 +147,28 @@ module.exports.edit = async (req, res) => {
             code: 400,
             message: "Edit failed"
         })
+    }
+}
+
+
+// [DELETE] /api/v1/edit/:id
+
+module.exports.delete = async (req, res) => {
+    try {
+        const id = req.params.id;
+        await Task.deleteOne({
+            _id: id
+        });
+
+        res.json({
+            code: 400,
+            message: 'Delete successfully',
+        })
+    } catch (error) {
+        res.json({
+            code: 400,
+            message: 'Delete Failed'
+        })
+
     }
 }

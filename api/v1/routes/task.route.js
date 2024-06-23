@@ -21,5 +21,9 @@ router.post('/create', controller.create)
 // http://localhost:3000/api/v1/edit/:id
 router.patch('/edit/:id', controller.edit)
 
+// http://localhost:3000/api/v1/delete/:id
+router.delete('/delete/:id', controller.delete)
+
+
 
 module.exports = router; 
