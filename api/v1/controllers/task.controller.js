@@ -69,9 +69,9 @@ module.exports.changeMulti = async (req, res) => {
           status: value
         })
         break;
-      case 'delete':
+      case 'deleted':
         await Task.updateMany({ _id: ids }, {
-          delete: value
+          deleted: value
         })
         break;
       case 'status':
