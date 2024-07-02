@@ -98,3 +98,15 @@ module.exports.create = async (req, res) => {
     res.status(500).json({ message: "Error updating task status", error });
   }
 }
+
+// [POST]/api/v1/tasks/create
+module.exports.edit = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    await Task.updateOne({ _id: id }, req.body);
+    res.json({ code: 200, message: 'Success' });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating task status", error });
+  }
+}
