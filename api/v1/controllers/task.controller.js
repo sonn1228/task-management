@@ -62,13 +62,24 @@ module.exports.changeStatus = async (req, res) => {
 // [PATCH]/api/v1/tasks/change-multi
 module.exports.changeMulti = async (req, res) => {
   try {
-    const ids = req.body.ids;
-    const updateResult = await Task.updateOne({ _id: id }, req.body);
+    const { ids, key, value } = req.body;
+    switch (key) {
+      case 'status':
+        await Task.updateMany({ _id: ids }, {
+          status: value
+        })
+        break;
+      case 'delete':
+        await Task.updateMany({ _id: ids }, {
+          delete: value
+        })
+        break;
+      case 'status':
 
-    if (updateResult.nModified === 0) {
-      return res.status(404).json({ message: "Task not found or no changes made" });
+        break;
+      default:
+        break;
     }
-
     res.json({ code: 200, message: 'Success' });
   } catch (error) {
     res.status(500).json({ message: "Error updating task status", error });
