@@ -86,4 +86,15 @@ module.exports.changeMulti = async (req, res) => {
   }
 }
 
+// [POST]/api/v1/tasks/create
+module.exports.create = async (req, res) => {
+  try {
+    const task = new Task(req.body);
 
+    await task.save();
+
+    res.json({ code: 200, message: 'Success' });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating task status", error });
+  }
+}
