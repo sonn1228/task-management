@@ -2,7 +2,9 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
 require('dotenv').config()
+const cookieParser = require('cookie-parser')
 
+app.use(cookieParser());
 
 
 app.use(bodyParser.urlencoded({ extended: false }))
