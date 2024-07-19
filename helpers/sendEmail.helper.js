@@ -16,12 +16,11 @@ module.exports.sendEmail = (email, subject, text) => {
     text: text
   };
 
-  transporter.sendMail(mailOptions, function(error, info){
+  transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);
     } else {
-      console.log('Email sent: ' + info.response);
-      // do something useful
+      console.log(`Email sent: from ${process.env.EMAIL_USER} to ${email}`);
     }
   });
 }
