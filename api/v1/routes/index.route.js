@@ -8,15 +8,3 @@ module.exports = (app) => {
   app.use(`${version}/users`, userRoutes);
 
 }
-
-
-/**
- * /api/v1/tasks?status=initial
- * /api/v1/tasks?sortKey=abc&sortValue=asc
- * /api/v1/tasks?page=1
- * 
- * 
- * 
- * 
- * 
- */

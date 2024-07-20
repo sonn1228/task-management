@@ -4,8 +4,14 @@ const objPaginationHelper = require('../../../helpers/objPagination.helper');
 // [GET]/api/v1/tasks
 module.exports.index = async (req, res) => {
   try {
-    let find = { deleted: false };
-
+    let find = {
+      $or: [
+        { createBy: req.user_id },
+        { listUser: req.user_id }
+      ],
+      deleted: false,
+      'createBy.user_id': req.user.id
+    };
     if (req.query.keyword) {
       const regex = new RegExp(req.query.keyword, 'i');
       find.title = regex;

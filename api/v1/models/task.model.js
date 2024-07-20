@@ -13,6 +13,7 @@ const taskSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  listUser: Array,
   createBy: {
     user_id: String,
     createAt: {
