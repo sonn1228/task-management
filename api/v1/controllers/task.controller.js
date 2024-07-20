@@ -103,7 +103,7 @@ module.exports.create = async (req, res) => {
 
     await task.save();
 
-    res.json({ code: 200, message: 'Success' });
+    res.json({ code: 200, message: 'Success', data: task });
   } catch (error) {
     res.status(500).json({ message: "Error updating task status", error });
   }
