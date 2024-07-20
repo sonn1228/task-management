@@ -13,6 +13,13 @@ const taskSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  createBy: {
+    user_id: String,
+    createAt: {
+      type: Date,
+      default: Date.now
+    }
+  },
   deletedAt: Date
 }, {
   timestamps: true,
